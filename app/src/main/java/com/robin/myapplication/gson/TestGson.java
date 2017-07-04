@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 import rx.Scheduler;
@@ -34,8 +35,11 @@ public class TestGson {
     public static String requestUrl = "http://api.map.baidu.com/telematics/v3/weather?location=上海&output=json&ak=D6607d3e2d2408a7a98ee44ec519f8cc";
     public static String baseUrl="http://api.map.baidu.com/telematics/v3/";
     public interface WeatherServer{
-        @GET
-        Observable<Result<WeatherInfo>> getWeatherInfo(@Url String url);
+        @GET("weather?")
+        Observable<Result<WeatherInfo>> getWeatherInfo(
+                @Query("location") String location,
+                @Query("output") String output,
+                @Query("ak") String ak);
 
         @GET("weather?location=上海&output=json&ak=D6607d3e2d2408a7a98ee44ec519f8cc")
         Observable<Result<WeatherInfo>> getWeatherInfo();
@@ -111,7 +115,7 @@ public class TestGson {
 //            }
 //        });
 
-        weatherServer.getWeatherInfo(requestUrl)
+        weatherServer.getWeatherInfo("上海", "json", "D6607d3e2d2408a7a98ee44ec519f8cc")
                 //.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Subscriber<Result<WeatherInfo>>() {
